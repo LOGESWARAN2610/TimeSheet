@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect, } from 'react';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
@@ -46,19 +46,9 @@ const rows = [
     },
 ];
 
-export default function ConditionalValidationGrid() {
-    const EnterTimeSheetColumn = [
-        { field: 'Row', headerName: 'S No.', width: 100, type: 'lable' },
-        { field: 'ProjectId', headerName: 'Project', width: 100, type: 'select' },
-        { field: 'ModuleId', headerName: 'Module', width: 100, type: 'select' },
-        { field: 'TaskName', headerName: 'Task', width: 100, type: 'select' },
-        { field: 'TaskDescription', headerName: 'Description', width: 200, type: 'textarea' },
-        { field: 'Issues', headerName: 'Issue', width: 100, type: 'input' },
-        { field: 'Object', headerName: 'Object', width: 100, type: 'input' },
-        { field: 'Status', headerName: 'Status', width: 100, type: 'select' },
-        { field: 'Hours', headerName: 'Hours', width: 100, type: 'number' },
-        { field: 'Remove', headerName: 'Hours', width: 100, type: 'button' }
-    ];
+export default function ConditionalValidationGrid(props) {
+    const [Columns, setColumns] = useState(props['Columns']);
+    const [Rows, setRows] = useState(props['Rows']);
     const columns = [
         { field: 'expense', headerName: 'Expense', width: 160, editable: true },
         {
@@ -100,8 +90,8 @@ export default function ConditionalValidationGrid() {
     return (
         <StyledBox>
             <DataGrid
-                rows={rows}
-                columns={EnterTimeSheetColumn}
+                rows={Rows}
+                columns={Columns}
                 // editMode="row"
                 editable='true'
                 experimentalFeatures={{ newEditingApi: true }}

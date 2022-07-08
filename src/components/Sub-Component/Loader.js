@@ -7,7 +7,7 @@ export default function Loader() {
     return (
         <>
             <div className='loader' style={{ textAlign: 'center' }}>
-                <MutatingDots
+                <TailSpin
                     color={localStorage['BgColor']}
                     secondaryColor={localStorage['BgColor']}
                     height='100%'

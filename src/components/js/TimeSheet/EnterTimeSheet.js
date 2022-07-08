@@ -12,30 +12,51 @@ import ViewTimeSheet from './ViewTimeSheet'
 import TimeSheetGrid from '../../Sub-Component/TimeSheetGrid';
 import NavBar from '../../Sub-Component/NavBar';
 import Loader from '../../Sub-Component/Loader';
+import setTheme from '../../Sub-Component/setTheme';
 
 export default function EnterTimeSheet() {
     const [EmpId, setEmpId] = useState(localStorage['EmpId']);
     const [isLoading, setIsLoading] = useState(true);
 
     const [EnterTimeSheet, setEnterTimeSheet] = useState([]);
+    const [ProjectList, setProjectList] = useState([]);
+    const [ModuleList, setModuleList] = useState([]);
+    const [TasktList, setTasktList] = useState([]);
+    const [StatusList, setStatusList] = useState([]);
     const [taskDate, setTaskDate] = useState((new Date().toLocaleDateString()).toString());
     const EnterTimeSheetColumn = [
-        { id: 'Row', label: 'S No.', minWidth: 100, type: 'lable' },
-        { id: 'ProjectId', label: 'Project', minWidth: 100, type: 'select' },
-        { id: 'ModuleId', label: 'Module', minWidth: 100, type: 'select' },
-        { id: 'TaskName', label: 'Task', minWidth: 100, type: 'select' },
-        { id: 'TaskDescription', label: 'Description', minWidth: 200, type: 'textarea' },
-        { id: 'Issues', label: 'Issue', minWidth: 100, type: 'input' },
-        { id: 'Object', label: 'Object', minWidth: 100, type: 'input' },
-        { id: 'Status', label: 'Status', minWidth: 100, type: 'select' },
-        { id: 'Hours', label: 'Hours', minWidth: 100, type: 'number' },
-        { id: 'Remove', label: 'Hours', minWidth: 100, type: 'button' }
+        { field: 'Row', headerName: 'S No.', width: 100 },
+        { field: 'ProjectId', headerName: 'Project', width: 100, editable: true, type: 'singleSelect', valueOptions: ProjectList },
+        { field: 'ModuleId', headerName: 'Module', width: 100, type: 'singleSelect', editable: true, valueOptions: ModuleList },
+        { field: 'TaskName', headerName: 'Task', width: 100, type: 'singleSelect', editable: true, valueOptions: TasktList },
+        { field: 'TaskDescription', headerName: 'Description', width: 200, editable: true },
+        { field: 'Issues', headerName: 'Issue', width: 100, type: 'input', editable: true },
+        { field: 'Object', headerName: 'Object', width: 100, type: 'input', editable: true },
+        { field: 'Status', headerName: 'Status', width: 100, type: 'singleSelect', editable: true, valueOptions: StatusList },
+        { field: 'Hours', headerName: 'Hours', width: 100, type: 'number', editable: true },
+        { field: 'Remove', headerName: 'Hours', width: 100, type: 'button' }
     ];
     useEffect(() => {
+        setTheme();
         axios.post(nodeurl['nodeurl'], { query: 'AB_Inprogressgrid ' + EmpId + ',"' + taskDate + '"' }).then(result => {
             setEnterTimeSheet(result.data[0]);
             setIsLoading(false);
-            console.log(result.data[0]);
+        });
+        axios.post(nodeurl['nodeurl'], { query: 'AB_EmployeeProjectList ' + EmpId }).then(result => {
+            setProjectList((result.data[0]).map(a => a['ProjectName']));
+            setIsLoading(false);
+        });
+        axios.post(nodeurl['nodeurl'], { query: 'AB_ModuleList ' + 5 }).then(result => {
+            setModuleList((result.data[0]).map(a => a['ModuleName']));
+            setIsLoading(false);
+        });
+        axios.post(nodeurl['nodeurl'], { query: 'AB_TaskList 5,51,2,' + EmpId }).then(result => {
+            setTasktList((result.data[0]).map(a => a['TaskName']));
+            setIsLoading(false);
+        });
+        axios.post(nodeurl['nodeurl'], { query: 'AB_StatusList' }).then(result => {
+            setStatusList((result.data[0]).map(a => a['TypeName']));
+            setIsLoading(false);
         });
     }, []);
     function TabPanel(props) {
@@ -73,7 +94,7 @@ export default function EnterTimeSheet() {
     }
 
     function FullWidthTabs(props) {
-        const [value, setValue] = useState(0);
+        const [value, setValue] = useState(1);
 
         const handleChange = (event, newValue) => {
             setValue(newValue);
@@ -105,7 +126,7 @@ export default function EnterTimeSheet() {
                         <TimeSheetGrid Columns={EnterTimeSheetColumn} Rows={EnterTimeSheet} Pagination={false} />
                     </TabPanel>
                     <TabPanel value={value} index={1}>
-                        {/* <CustomGrid Columns={[]} Rows={[]} Pagination={false} /> */}
+                        <ViewTimeSheet />
                     </TabPanel>
 
                 </SwipeableViews >
