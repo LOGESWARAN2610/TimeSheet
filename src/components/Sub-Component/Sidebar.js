@@ -10,10 +10,11 @@ const Sidebar = () => {
     const handelLogOut = () => {
         localStorage.clear();
     }
+    localStorage.setItem('toggled', true)
     const { pathname } = useLocation();
     return (
         <div style={{ display: 'flex', marginTop: '-60px' }}>
-            <CDBSidebar backgroundColor={localStorage['BgColor']} textColor={localStorage['Color']} toggled >
+            <CDBSidebar backgroundColor={localStorage['BgColor']} textColor={localStorage['Color']} toggled={true} >
 
                 <CDBSidebarHeader style={{ padding: '6px 0' }} prefix={<FontAwesomeIcon icon={faBars} />}>
                     <a className="text-decoration-none" style={{ color: 'inherit', padding: 'inherit' }}>

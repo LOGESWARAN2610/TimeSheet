@@ -2,16 +2,13 @@ import React, { useState, useEffect, } from 'react';
 // import Sidebar from './Sidebar'
 import axios from 'axios';
 import nodeurl from '../../../nodeServer.json'
-import PropTypes from 'prop-types';
-import SwipeableViews from 'react-swipeable-views';
-import AppBar from '@mui/material/AppBar';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 import '../../css/style.css'
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 import CustomGrid from '../../Sub-Component/CustomeGrid';
-import NavBar from '../../Sub-Component/NavBar';
 import Loader from '../../Sub-Component/Loader';
 
 export default function Home() {
@@ -32,82 +29,42 @@ export default function Home() {
         { id: 'OTD', label: 'OTD', minWidth: 70 },
         { id: 'Create Sub-Task', label: 'Create Sub-Task', minWidth: 70, button: 'Re-Work', onclick: 'onclick("alert()")' }
     ]);
-    useEffect(() => {
-        axios.post(nodeurl['nodeurl'], { query: 'AB_Employee_Tasksummary ' + EmpId + ',1' }).then(result => {
-            setRowData(result.data[0]);
-            setTimeout(() => { setIsLoading(false); }, 800);
-        });
-    }, []);
+    // useEffect(() => {
+    //     axios.post(nodeurl['nodeurl'], { query: 'AB_Employee_Tasksummary ' + EmpId + ',1' }).then(result => {
+    //         setRowData(result.data[0]);
+    //         setTimeout(() => { setIsLoading(false); }, 800);
+    //     });
+    // }, []);
 
-
-    function TabPanel(props) {
-
-        const { children, value, index, ...other } = props;
-
+    const ViewPanel = () => {
+        const [value, setValue] = useState(0);
+        const handleChange = (e) => {
+            setValue(e.target.value)
+            console.log((value))
+        }
         return (
-            <div
-                role="tabpanel"
-                hidden={value !== index}
-                id={`full-width-tabpanel-${index}`}
-                aria-labelledby={`full-width-tab-${index}`}
-                {...other}
-            >
-                {value === index && (
-                    <Box sx={{ p: 3 }}>
-                        <Typography component={"span"} variant={"body2"}>{children}</Typography>
-                    </Box>
-                )}
-            </div>
+            <>
+                <div className='viewPanel'>
+                    <FormControl>
+                        <RadioGroup
+                            row
+                            aria-labelledby="demo-row-radio-buttons-group-label"
+                            name="row-radio-buttons-group"
+                        // defaultValue="0"
+                        >
+                            <FormControlLabel value="0" control={<Radio />} onClick={handleChange} label="Date" />
+                            <FormControlLabel value="1" control={<Radio />} onClick={handleChange} label="Range" />
+                            <FormControlLabel value="2" control={<Radio />} onClick={handleChange} label="Month" />
+                        </RadioGroup>
+                    </FormControl>
+                </div>
+                {value === 0 && <>hi</>}
+                {value === 1 && <>hsi</>}
+                {value === 2 && <>hdi</>}
+            </>
         );
     }
 
-    TabPanel.propTypes = {
-        children: PropTypes.node,
-        index: PropTypes.number.isRequired,
-        value: PropTypes.number.isRequired,
-    };
-
-    function a11yProps(index) {
-        return {
-            id: `full-width-tab-${index}`,
-            'aria-controls': `full-width-tabpanel-${index}`,
-        };
-    }
-
-    function FullWidthTabs() {
-        const [value, setValue] = React.useState(0);
-
-        const handleChange = (event, newValue) => {
-            setValue(newValue);
-        };
-
-        const handleChangeIndex = (index) => {
-            setValue(index);
-        };
-
-        return (
-            <Box sx={{ bgcolor: 'inherit' }}>
-                <AppBar position="static" style={{ width: '150px', marginLeft: '25px', backgroundColor: '#fff' }} >
-                    <Tabs
-                        value={value}
-                        onChange={handleChange}
-                        textColor="inherit"
-                        style={{ color: localStorage['BgColor'] }}
-                    >
-                        <Tab label="Task DashBoard" style={{ textTransform: 'capitalize', fontWeight: 600, fontSize: '16px' }} {...a11yProps(0)} />
-                    </Tabs>
-                </AppBar>
-                <SwipeableViews
-                    index={value}
-                    onChangeIndex={handleChangeIndex}
-                >
-                    <TabPanel value={value} index={0}>
-                        <CustomGrid Rows={rowData} Columns={columns} Pagination={true} />
-                    </TabPanel>
-                </SwipeableViews>
-            </Box>
-        );
-    }
-    if (isLoading) return (<NavBar Component={<Loader />} />);
-    return (<NavBar Component={<FullWidthTabs />} />);
+    // if (isLoading) return (<Loader />);
+    return (<ViewPanel />);
 }
